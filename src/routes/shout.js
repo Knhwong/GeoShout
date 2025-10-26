@@ -1,4 +1,5 @@
 const pool = require('../db/db');
+const getZone = require('../misc/utils')
 
 const express = require('express');
 const router = express.Router();
@@ -16,6 +17,12 @@ router.post('/shout', async (req, res) => {
 
         const { rows } = await pool.query(query, [user_id, message, lon, lat]);
         const newShout = rows[0];
+
+        const io = req.app.get('io');
+        const zone = getZone(lat, lon);
+        io.to(zone).emit('shout', { ...newShout, lat, lon });
+
+
         res.status(201).json({ success: true, shout: newShout });
     } catch (e) {
         console.error('Error posting shout:', e);

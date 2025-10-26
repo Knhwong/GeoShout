@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GeoShout Live Zones</title>
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background: #f5f5f5;
+      color: #333;
+      padding: 20px;
+    }
+    h1 {
+      font-size: 1.5rem;
+      color: #444;
+    }
+    #status {
+      margin-bottom: 10px;
+      color: #555;
+    }
+    #feed {
+      background: white;
+      border-radius: 8px;
+      padding: 10px;
+      max-height: 300px;
+      overflow-y: auto;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<div style="margin-top: 20px;">
+  <h3>Simulate Movement</h3>
+  <button onclick="jumpTo('la')">📍 Los Angeles</button>
+  <button onclick="jumpTo('sf')">📍 San Francisco</button>
+  <button onclick="jumpTo('ny')">📍 New York</button>
+  <button onclick="jumpTo('paris')">📍 Paris</button>
+  <button onclick="jumpTo('tokyo')">📍 Tokyo</button>
+</div>
+
+<body>
+  <h1>📍 GeoShout Live Feed</h1>
+  <div id="status">Connecting...</div>
+  <div id="feed"></div>
+
+<script>
+  const socket = io('http://localhost:3000');
+  const statusEl = document.getElementById('status');
+  const feedEl = document.getElementById('feed');
+
+  let currentZone = null;
+
+  function getZone(lat, lon, precision = 100) {
+    return `${Math.round(lat * precision)}:${Math.round(lon * precision)}`;
+  }
+
+  function appendFeed(message) {
+    const div = document.createElement('div');
+    div.textContent = message;
+    feedEl.appendChild(div);
+    feedEl.scrollTop = feedEl.scrollHeight;
+  }
+
+  socket.on('connect', () => {
+    statusEl.textContent = `🟢 Connected (${socket.id})`;
+    console.log('Connected to server');
+  });
+
+  socket.on('disconnect', () => {
+    statusEl.textContent = '🔴 Disconnected';
+  });
+
+  socket.on('shout', (data) => {
+    appendFeed(`${data.user_id || 'Anonymous'}: ${data.message}`);
+  });
+
+  function emitLocation(lat, lon) {
+    const newZone = getZone(lat, lon);
+    if (newZone !== currentZone) {
+      currentZone = newZone;
+      socket.emit('update-location', { lat, lon });
+      statusEl.textContent = `🗺️ Moved to zone ${newZone} (${lat.toFixed(4)}, ${lon.toFixed(4)})`;
+      console.log(`Moved to zone ${newZone}`);
+    }
+  }
+
+  // 🔹 Manual test buttons
+  function jumpTo(locationName) {
+    const locations = {
+      la: [34.0522, -118.2437],    // Los Angeles
+      ny: [40.7128, -74.0060],     // New York
+      sf: [37.7749, -122.4194],    // San Francisco
+      paris: [48.8566, 2.3522],    // Paris
+      tokyo: [35.6762, 139.6503]   // Tokyo
+    };
+
+    const coords = locations[locationName];
+    if (coords) emitLocation(coords[0], coords[1]);
+  }
+</script>
+
+</body>
+</html>
