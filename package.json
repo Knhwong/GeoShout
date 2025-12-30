@@ -1,20 +1,23 @@
 {
   "name": "geoshout",
   "version": "1.0.0",
-  "description": "geolocational shouting",
-  "license": "ISC",
-  "author": "Razerys",
-  "type": "commonjs",
-  "main": "index.js",
-  "scripts": {
-    "start": "node src/app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "description": "",
+  "homepage": "https://github.com/Knhwong/GeoShout#readme",
+  "bugs": {
+    "url": "https://github.com/Knhwong/GeoShout/issues"
   },
-  "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^17.2.3",
-    "express": "^5.1.0",
-    "pg": "^8.16.3",
-    "socket.io": "^4.8.1"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Knhwong/GeoShout.git"
+  },
+  "license": "ISC",
+  "author": "",
+    "workspaces": [
+    "backend",
+    "frontend"
+  ], "scripts": {
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:frontend": "npm --prefix frontend run dev"
   }
+
 }

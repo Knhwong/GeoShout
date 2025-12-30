@@ -1,5 +1,5 @@
 const pool = require('../db/db');
-const getZone = require('../misc/utils')
+const getZone = require('../../../misc/utils')
 
 const express = require('express');
 const router = express.Router();
