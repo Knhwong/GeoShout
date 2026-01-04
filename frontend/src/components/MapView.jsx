@@ -33,8 +33,21 @@ export default function MapView({ userLocation, shouts }) {
       new mapboxgl.Marker({ color: "red" })
         .setLngLat([s.lon, s.lat])
         .addTo(map.current);
+      spawnPing(map.current, s.lon, s.lat);
     });
   }, [shouts]);
+
+  function spawnPing(map, lon, lat) {
+  const el = document.createElement("div");
+  el.className = "geoshout-ping";
+
+  const marker = new mapboxgl.Marker({ element: el })
+    .setLngLat([lon, lat])
+    .addTo(map);
+
+  // Remove after animation completes
+  window.setTimeout(() => marker.remove(), 1200);
+}
 
   return <div ref={mapContainer} className="flex-1" />;
 }

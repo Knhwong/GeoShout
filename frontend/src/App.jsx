@@ -7,41 +7,37 @@ export default function App() {
   const [userLocation, setUserLocation] = useState(null);
   const [shouts, setShouts] = useState([]);
 
-  // Track user geolocation
+
   useEffect(() => {
     if (!navigator.geolocation) return;
     const watcher = navigator.geolocation.watchPosition(
       ({ coords }) => {
         const loc = { lat: coords.latitude, lon: coords.longitude };
         setUserLocation(loc);
-
-        // Notify backend of location for zone assignment
         socket.emit("updateLocation", loc);
       },
-      (err) => console.error("Geolocation error:", err),
+      (err) => console.error("Geolocation error:", err.message),
       { enableHighAccuracy: true, maximumAge: 5000, timeout: 5000 }
     );
 
     return () => navigator.geolocation.clearWatch(watcher);
   }, []);
 
-  // Listen for live shouts in current zone
   useEffect(() => {
-    socket.on("shoutUpdate", (shout) => {
-      setShouts((prev) => [shout, ...prev]);
+    socket.on("zoneJoined", (update) => {
+      console.log("Joined Zone:", update.zone);
     });
-
-    return () => socket.off("shoutUpdate");
+    return () => socket.off("zoneJoined");
   }, []);
 
-  // Optional: fetch initial shouts from /feed
+
   useEffect(() => {
-    if (!userLocation) return;
-    fetch(`${import.meta.env.VITE_BACKEND_URL}/feed?lat=${userLocation.lat}&lon=${userLocation.lon}`)
-      .then((res) => res.json())
-      .then((data) => setShouts(data.shouts || []))
-      .catch(console.error);
-  }, [userLocation]);
+    const onShout = (shout) => {
+    setShouts((prev) => [...prev, shout]);
+    };
+    socket.on("shoutUpdate", onShout);
+    return () => socket.off("shoutUpdate");
+  }, []);
 
   return (
     <div className="flex h-screen w-screen">

@@ -14,15 +14,17 @@ export default function ShoutBox({ shouts, setShouts, userLocation }) {
       lat: userLocation.lat,
       lon: userLocation.lon,
     };
-
     try {
+      /*
       await fetch(`${import.meta.env.VITE_BACKEND_URL}/shout`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newShout),
-      });
+      });*/
 
       // Emit to backend Socket.IO for zone broadcast
+      console.log(newShout)
+
       socket.emit("newShout", newShout);
 
       setMessage("");
@@ -33,9 +35,9 @@ export default function ShoutBox({ shouts, setShouts, userLocation }) {
 
   return (
     <div className="w-1/3 h-full border-l border-gray-300 p-4 overflow-y-auto bg-gray-50 flex flex-col">
-      <h2 className="text-xl font-semibold mb-4">Nearby Shouts</h2>
+      <h2 className="text-xl font-semibold mb-4 text-black">Nearby Shouts</h2>
 
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto flex flex-col justify-end">
         {shouts.length === 0 && <p className="text-gray-500">No shouts yet!</p>}
         {shouts.map((s, i) => (
           <ShoutItem key={i} shout={s} />

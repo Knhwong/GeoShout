@@ -27,27 +27,34 @@ const io = new Server(server, {
 
 io.on('connection', (socket) => {
     console.log('🟢 Client connected:', socket.id);
-
-    socket.on('join-zone', ({ lat, lon }) => {
-        const zone = getZone(lat, lon);
-        socket.join(zone);
-        console.log(`🗺️ ${socket.id} joined zone ${zone}`);
-    });
+    let currentZone = null;
 
     socket.on('disconnect', () => {
         console.log('🔴 Client disconnected:', socket.id);
     });
 
-    socket.on('update-location', ({ lat, lon }) => {
+    socket.on('updateLocation', ({ lat, lon }) => {
         const newZone = getZone(lat, lon);
 
         // Leave old zone rooms
         for (const room of socket.rooms) {
             if (room.includes(':')) socket.leave(room);
         }
-
+        
+        currentZone = newZone;
         socket.join(newZone);
+        socket.emit("zoneJoined", { zone: newZone });
         console.log(`🔄 ${socket.id} moved to zone ${newZone}`);
+    });
+
+    socket.on("newShout", async (payload) => {
+        
+        if (!payload.user_id || !payload.message || typeof payload.lat !== 'number' || typeof payload.lon !== 'number') {
+            console.log("Error invalid payload!")
+            return;
+        }
+        console.log(payload);
+        io.to(currentZone).emit("shoutUpdate", payload);
     });
 });
 
