@@ -49,8 +49,8 @@ export default function Landing({ onReady }) {
         <input
           value={userId}
           onChange={(e) => setUserId(e.target.value)}
-          placeholder="e.g. corimaith"
-          className="mt-2 w-full p-2 border rounded"
+          placeholder="e.g. John Doe"
+          className="mt-2 w-full p-2 border rounded text-gray-500"
         />
 
         <button

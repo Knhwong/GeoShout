@@ -9,7 +9,7 @@ export default function ShoutItem({ shout }) {
       className="mb-3 p-2 bg-white text-gray-900 rounded border shadow-sm"
     >
       <div className="text-sm">
-        <span className="font-semibold">{shout.user}</span>: {shout.message}
+        <span className="font-semibold">{shout.user_id}</span>: {shout.message}
       </div>
     </motion.div>
   );

@@ -67,3 +67,29 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+/* Small dot marker */
+.gs-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 9999px;
+  background: rgba(59, 130, 246, 0.9);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.9);
+}
+
+/* One-shot sonar ping ring */
+@keyframes gs-sonar {
+  0%   { transform: translate(-50%, -50%) scale(0.2); opacity: 0.9; }
+  70%  { opacity: 0.35; }
+  100% { transform: translate(-50%, -50%) scale(3.2); opacity: 0; }
+}
+
+.gs-ping {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 9999px;
+  border: 2px solid rgba(59, 130, 246, 0.85);
+  background: rgba(59, 130, 246, 0.12);
+  animation: gs-sonar 900ms ease-out forwards;
+  pointer-events: none;
+}

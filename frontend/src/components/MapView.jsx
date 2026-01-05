@@ -13,41 +13,35 @@ export default function MapView({ userLocation, shouts }) {
 
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
-      style: "mapbox://styles/mapbox/streets-v12",
+      style: "mapbox://styles/mapbox/navigation-night-v1",
       center: [userLocation.lon, userLocation.lat],
       zoom: 12,
     });
 
-    // User marker
-    new mapboxgl.Marker({ color: "blue" })
+
+
+    const meEl = document.createElement("div");
+    meEl.className = "gs-dot";
+    meEl.style.background = "rgba(16, 185, 129, 0.95)";
+    meEl.style.borderColor = "rgba(16, 185, 129, 0.95)" // green-ish for "me"
+    new mapboxgl.Marker(meEl)
       .setLngLat([userLocation.lon, userLocation.lat])
       .addTo(map.current);
+
+    // User marker
   }, [userLocation]);
 
-  // Render markers for shouts
-  useEffect(() => {
-    if (!map.current) return;
-
-    // Optional: clear previous shout markers here if needed
-    shouts.forEach((s) => {
-      new mapboxgl.Marker({ color: "red" })
-        .setLngLat([s.lon, s.lat])
-        .addTo(map.current);
-      spawnPing(map.current, s.lon, s.lat);
-    });
-  }, [shouts]);
 
   function spawnPing(map, lon, lat) {
-  const el = document.createElement("div");
-  el.className = "geoshout-ping";
+    const el = document.createElement("div");
+    el.className = "gs-ping";
 
-  const marker = new mapboxgl.Marker({ element: el })
-    .setLngLat([lon, lat])
-    .addTo(map);
+    const marker = new mapboxgl.Marker({ element: el })
+      .setLngLat([lon, lat])
+      .addTo(map);
 
-  // Remove after animation completes
-  window.setTimeout(() => marker.remove(), 1200);
-}
+    window.setTimeout(() => marker.remove(), 1000);
+  }
 
   return <div ref={mapContainer} className="flex-1" />;
 }

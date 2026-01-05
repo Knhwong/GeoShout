@@ -2,14 +2,14 @@ import { useState } from "react";
 import ShoutItem from "./ShoutItem";
 import socket from "@/socket";
 
-export default function ShoutBox({ shouts, setShouts, userLocation }) {
+export default function ShoutBox({ shouts, setShouts, userId, userLocation }) {
   const [message, setMessage] = useState("");
 
   const handleSend = async () => {
     if (!message.trim() || !userLocation) return;
 
     const newShout = {
-      user_id: "You",
+      user_id: userId,
       message,
       lat: userLocation.lat,
       lon: userLocation.lon,
@@ -50,7 +50,13 @@ export default function ShoutBox({ shouts, setShouts, userLocation }) {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder="Type a shout..."
-          className="flex-1 p-2 border border-gray-300 rounded-l text-gray-900"
+          className="flex-1 p-2 border border-gray-300 rounded-l text-gray-500"
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();   // important
+              handleSend();
+            }
+          }}
         />
         <button
           onClick={handleSend}
