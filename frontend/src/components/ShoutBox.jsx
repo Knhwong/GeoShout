@@ -1,6 +1,7 @@
 import { useState } from "react";
 import ShoutItem from "./ShoutItem";
 import socket from "@/socket";
+import getZone from "@/misc/getZone";
 
 export default function ShoutBox({ shouts, setShouts, userId, userLocation }) {
   const [message, setMessage] = useState("");
@@ -13,6 +14,7 @@ export default function ShoutBox({ shouts, setShouts, userId, userLocation }) {
       message,
       lat: userLocation.lat,
       lon: userLocation.lon,
+      zone: getZone(userLocation.lat, userLocation.lon)
     };
     try {
       /*
@@ -22,9 +24,7 @@ export default function ShoutBox({ shouts, setShouts, userId, userLocation }) {
         body: JSON.stringify(newShout),
       });*/
 
-      // Emit to backend Socket.IO for zone broadcast
-      console.log(newShout)
-
+      // emit to socket instead
       socket.emit("newShout", newShout);
 
       setMessage("");

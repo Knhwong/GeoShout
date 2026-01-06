@@ -1,10 +1,9 @@
 import { useState } from "react";
-import Landing from "@/Landing";
-import MainContent from "@/MainContent";
+import Landing from "@/pages/Landing";
+import MainContent from "@/pages/MainContent";
 
 export default function App() {
   const [session, setSession] = useState(null);
-  // session = { userId, location }
 
   if (!session) {
     return <Landing onReady={setSession} />;

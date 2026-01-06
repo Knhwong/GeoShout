@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import MapView from "@/components/MapView";
 import ShoutBox from "@/components/ShoutBox";
 import socket from "@/socket";
+import getZone from "@/misc/getZone";
 
 export default function MainContent({userId, initialLocation}) {
   const [userLocation, setUserLocation] = useState(null);
@@ -12,7 +13,7 @@ export default function MainContent({userId, initialLocation}) {
     if (!navigator.geolocation) return;
     const watcher = navigator.geolocation.watchPosition(
       ({ coords }) => {
-        const loc = { lat: coords.latitude, lon: coords.longitude };
+        const loc = { lat: coords.latitude, lon: coords.longitude, zone: getZone(coords.latitude,coords.longitude)};
         setUserLocation(loc);
         socket.emit("updateLocation", loc);
       },

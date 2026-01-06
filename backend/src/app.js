@@ -6,6 +6,8 @@ const { Server } = require('socket.io');
 const getZone = require('../../misc/utils');
 const shoutRoute = require('./routes/shout');
 const feedRoute = require('./routes/feed')
+const updateLocation = require('./handlers/updateLocation')
+const newShout = require('./handlers/newShout')
 const pool = require('./db/db');
 
 const app = express()
@@ -26,36 +28,15 @@ const io = new Server(server, {
 });
 
 io.on('connection', (socket) => {
-    console.log('🟢 Client connected:', socket.id);
-    let currentZone = null;
+    console.log('Client connected:', socket.id);
 
     socket.on('disconnect', () => {
-        console.log('🔴 Client disconnected:', socket.id);
+        console.log('Client disconnected:', socket.id);
     });
 
-    socket.on('updateLocation', ({ lat, lon }) => {
-        const newZone = getZone(lat, lon);
+    socket.on('updateLocation', updateLocation(socket, io));
 
-        // Leave old zone rooms
-        for (const room of socket.rooms) {
-            if (room.includes(':')) socket.leave(room);
-        }
-        
-        currentZone = newZone;
-        socket.join(newZone);
-        socket.emit("zoneJoined", { zone: newZone });
-        console.log(`🔄 ${socket.id} moved to zone ${newZone}`);
-    });
-
-    socket.on("newShout", async (payload) => {
-        
-        if (!payload.user_id || !payload.message || typeof payload.lat !== 'number' || typeof payload.lon !== 'number') {
-            console.log("Error invalid payload!")
-            return;
-        }
-        console.log(payload);
-        io.to(currentZone).emit("shoutUpdate", payload);
-    });
+    socket.on("newShout", newShout(socket, io));
 });
 
 app.set('io', io);
