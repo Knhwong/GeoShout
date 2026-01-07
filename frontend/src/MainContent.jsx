@@ -2,10 +2,9 @@ import { useEffect, useState } from "react";
 import MapView from "@/components/MapView";
 import ShoutBox from "@/components/ShoutBox";
 import socket from "@/socket";
-import getZone from "@/misc/getZone";
 
-export default function MainContent({userId, initialLocation}) {
-  const [userLocation, setUserLocation] = useState(null);
+export default function Main({ userId, initialLocation }) {
+  const [userLocation, setUserLocation] = useState(initialLocation);
   const [shouts, setShouts] = useState([]);
 
 
@@ -13,7 +12,7 @@ export default function MainContent({userId, initialLocation}) {
     if (!navigator.geolocation) return;
     const watcher = navigator.geolocation.watchPosition(
       ({ coords }) => {
-        const loc = { userId: userId, lat: coords.latitude, lon: coords.longitude, zone: getZone(coords.latitude,coords.longitude)};
+        const loc = { lat: coords.latitude, lon: coords.longitude };
         setUserLocation(loc);
         socket.emit("updateLocation", loc);
       },
@@ -43,7 +42,7 @@ export default function MainContent({userId, initialLocation}) {
   return (
     <div className="flex h-screen w-screen">
       <MapView userLocation={userLocation} shouts={shouts} />
-      <ShoutBox shouts={shouts} setShouts={setShouts} userLocation={userLocation} userId={userId} />
+      <ShoutBox shouts={shouts} setShouts={setShouts} userLocation={userLocation} />
     </div>
   );
 }

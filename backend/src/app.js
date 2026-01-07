@@ -9,7 +9,7 @@ const feedRoute = require('./routes/feed')
 const updateLocation = require('./handlers/updateLocation')
 const newShout = require('./handlers/newShout')
 const pool = require('./db/db');
-
+const corsOrigin = process.env.CORS_ORIGIN;
 const app = express()
 app.use(express.json());
 app.use(cors());
@@ -23,7 +23,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
     cors: {
-        origin: '*', // loosen for dev
+        origin: corsOrigin, // loosen for dev
     }
 });
 
