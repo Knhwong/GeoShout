@@ -17,14 +17,6 @@ export default function ShoutBox({ shouts, setShouts, userId, userLocation }) {
       zone: getZone(userLocation.lat, userLocation.lon)
     };
     try {
-      /*
-      await fetch(`${import.meta.env.VITE_BACKEND_URL}/shout`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newShout),
-      });*/
-
-      // emit to socket instead
       socket.emit("newShout", newShout);
 
       setMessage("");

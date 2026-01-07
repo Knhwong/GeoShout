@@ -2,9 +2,10 @@ import { useEffect, useRef } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 
-mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
+//This sucks but it's much faster and mapbox tokens are public anyways
+mapboxgl.accessToken = "pk.eyJ1Ijoia25od29uZyIsImEiOiJjbWg4Z20yZ2QwdWdpMmpwY3NpODZxYTN5In0.oGhpaXqBzaIk4ElLXLUr2A"
 
-export default function MapView({ userLocation, shouts }) {
+export default function MapView({ userLocation}) {
   const mapContainer = useRef(null);
   const map = useRef(null);
 
