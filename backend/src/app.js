@@ -1,4 +1,5 @@
 require('dotenv').config();
+const path = require("path");
 const express = require('express')
 const http = require('http');
 const cors = require('cors');
@@ -8,6 +9,7 @@ const shoutRoute = require('./routes/shout');
 const feedRoute = require('./routes/feed')
 const updateLocation = require('./handlers/updateLocation')
 const newShout = require('./handlers/newShout')
+const disconnect = require('./handlers/disconnect')
 const pool = require('./db/db');
 const corsOrigin = process.env.CORS_ORIGIN;
 const app = express()
@@ -15,6 +17,12 @@ app.use(express.json());
 app.use(cors());
 
 
+const distPath = path.resolve(__dirname, "../../frontend/dist");
+console.log(distPath);
+app.use(express.static(distPath));
+app.get('/', (req, res) => {
+  res.sendFile(path.join(distPath, "index.html"));
+});
 
 app.use('/', shoutRoute);
 app.use('/', feedRoute);
@@ -30,9 +38,7 @@ const io = new Server(server, {
 io.on('connection', (socket) => {
     console.log('Client connected:', socket.id);
 
-    socket.on('disconnect', () => {
-        console.log('Client disconnected:', socket.id);
-    });
+    socket.on('disconnect', disconnect(socket,io));
 
     socket.on('updateLocation', updateLocation(socket, io));
 
