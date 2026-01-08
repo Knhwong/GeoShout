@@ -17,7 +17,11 @@
     "frontend"
   ], "scripts": {
     "dev:backend": "npm --prefix backend run dev",
-    "dev:frontend": "npm --prefix frontend run dev"
+    "dev:frontend": "npm --prefix frontend run dev",
+    "build": "npm run build -w frontend",
+    "start": "npm run start -w backend",
+
+    "prd": "npm run build && npm run start"
   }
 
 }
