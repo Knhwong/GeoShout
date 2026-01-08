@@ -14,7 +14,6 @@ const pool = require('./db/db');
 const corsOrigin = process.env.CORS_ORIGIN;
 const app = express()
 app.use(express.json());
-app.use(cors());
 
 
 const distPath = path.resolve(__dirname, "../../frontend/dist");
@@ -30,11 +29,7 @@ app.use('/', config)
 
 const server = http.createServer(app);
 
-const io = new Server(server, {
-    cors: {
-        origin: corsOrigin, // loosen for dev
-    }
-});
+const io = new Server(server);
 
 io.on('connection', (socket) => {
     console.log('Client connected:', socket.id);
