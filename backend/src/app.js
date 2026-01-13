@@ -10,7 +10,7 @@ const config = require('./routes/config');
 const updateLocation = require('./handlers/updateLocation');
 const newShout = require('./handlers/newShout');
 const disconnect = require('./handlers/disconnect');
-const pool = require('./db/db');
+const {checkConnection} = require('./db/db');
 const corsOrigin = process.env.CORS_ORIGIN;
 const app = express()
 app.use(express.json());
@@ -46,11 +46,5 @@ app.set('io', io);
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
-    pool.query('SELECT NOW()', (err, res) => {
-        if (err) {
-            console.error('Database connection error:', err);
-        } else {
-            console.log('Database connected! Current time:', res.rows[0].now);
-        }
-    });
+    checkConnection();
 });
