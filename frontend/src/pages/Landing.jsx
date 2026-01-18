@@ -38,7 +38,7 @@ export default function Landing({ onReady }) {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-6">
       <div className="w-full max-w-md bg-white rounded-xl shadow p-6 border">
-        <h1 className="text-2xl font-semibold">GeoShout</h1>
+        <h1 className="text-2xl text-black font-semibold">GeoShout</h1>
         <p className="text-sm text-gray-600 mt-1">
           Enter a user id and allow location to start.
         </p>
@@ -56,9 +56,15 @@ export default function Landing({ onReady }) {
         <button
           disabled={!canContinue || status === "requesting"}
           onClick={requestLocation}
-          className="mt-4 w-full py-2 rounded bg-blue-600 text-white disabled:bg-gray-300 disabled:text-gray-600"
+          className="
+              mt-4 w-full h-10
+              rounded bg-blue-600 text-white
+              disabled:bg-gray-300 disabled:text-gray-600
+              flex items-center justify-center
+              whitespace-nowrap
+            "
         >
-          {status === "requesting" ? "Requesting location..." : "Continue"}
+          {status === "requesting" ? "Requesting Location..." : "Continue"}
         </button>
 
         {status === "error" && (
@@ -68,7 +74,7 @@ export default function Landing({ onReady }) {
         )}
 
         <div className="mt-4 text-xs text-gray-500">
-          Tip: If Chrome times out, try Edge or DevTools → Sensors to simulate location.
+          Enable Location to continue!
         </div>
       </div>
     </div>
